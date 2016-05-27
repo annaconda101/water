@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% for question in questions %}
+        {% include "_question.html" with question=question only %}
+    {% empty %}
+        <p>No questions yet.</p>
+    {% endfor %}
+{% endblock content %}

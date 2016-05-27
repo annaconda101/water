@@ -1,0 +1,30 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fire</title>
+    <link rel="stylesheet" href="{% static "css/foundation.css" %}">
+</head>
+<body>
+    <section class="row">
+        <header class="large-12 columns">
+            <h1>Welcome to Fire</h1>
+            <hr>
+        </header>
+    </section>
+
+    <section class="row">
+
+        <div class="large-8 columns">
+            {% block content %}{% endblock %}
+        </div>
+
+        <div class="large-4 columns">
+            <p>This is a basic forum where you can post questions and upvote or downvote answers</p>
+        </div>
+
+    </section>
+
+</body>
+</html>
+
