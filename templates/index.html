@@ -1,9 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-    {% for question in questions %}
-        {% include "_question.html" with question=question only %}
-    {% empty %}
-        <p>No questions yet.</p>
+    {% if questions %}
+        {% for question in questions %}
+            <article>
+            <h2><a href="{{ question.get_absolute_url }}">{{ question.title }}</a></h2>
+            <p class="subheader">{{ question.description }}</p>
+            </article>
     {% endfor %}
+    {% endif %}
 {% endblock content %}
