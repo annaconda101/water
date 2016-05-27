@@ -39,3 +39,13 @@ class HomePageTests(TestCase):
         self.assertContains(response, first_description)
         self.assertContains(response, second_title)
         self.assertContains(response, second_description)
+
+
+class QuestionViewTest(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create(username='some_user')
+        self.question = Question.objects.create(title='Android or iPhone?', description='Help a non-techy person out!')
+
+    def test_basic_view(self):
+        response = self.client.get(self.question.get_absolute_url())
+        self.assertEqual(response.status_code, 200)

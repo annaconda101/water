@@ -1,13 +1,13 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.models import User
 
 from fire.models import Question
 
 
-def index(request):
-    questions = Question.objects.all()
-    c = { 'questions': questions, }
+def question_detail(request, id):
+    question = get_object_or_404(Question, id=id)
+    c = { 'question': question, }
 
-    return render_to_response('fire/index.html', c)
+    return render(request, 'fire/question-detail.html', c)
 
 

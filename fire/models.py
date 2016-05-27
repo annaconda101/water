@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.urlresolvers import reverse
 
 
 class Question(models.Model):
@@ -10,6 +11,10 @@ class Question(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('fire_question-detail', kwargs={'id': self.pk})
+
 
 class Answer(models.Model):
     text = models.CharField(max_length=200)
