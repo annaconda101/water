@@ -8,6 +8,9 @@ class Question(models.Model):
     def __unicode__(self):
         return self.title
 
+    def __str__(self):
+        return self.title
+
 class Answer(models.Model):
     text = models.CharField(max_length=200)
     score = models.IntegerField(default=0)
