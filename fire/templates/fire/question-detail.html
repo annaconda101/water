@@ -1,1 +1,6 @@
-Question Detail Page
+{% extends "base.html" %}
+
+{% block content %}
+    Question Detail Page
+    {% include "fire/_question.html" with question=question only %}
+{% endblock %}
