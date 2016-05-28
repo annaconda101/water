@@ -51,11 +51,11 @@ class QuestionViewTest(TestCase):
     def test_basic_view(self):
         response = self.client.get(self.question.get_absolute_url())
         self.assertEqual(response.status_code, 200)
-    
+
     def test_question_and_answer_relationship(self):
         number_of_answers = len(self.question.answers.all())
         self.assertEqual(number_of_answers, 1)
-    
+
     def test_view_with_one_answer(self):
         response = self.client.get(self.question.get_absolute_url())
         self.assertContains(response, str(self.answer.text))
@@ -66,3 +66,8 @@ class AnswerModelTest(TestCase):
         text = 'I personally like Android.'
         answer = Answer(text=text)
         self.assertEqual(str(answer), text)
+
+    def test_score_defaults_to_zero(self):
+        text = 'I personally like Android.'
+        answer = Answer(text=text)
+        self.assertEqual(answer.score, 0)
