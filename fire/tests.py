@@ -46,7 +46,7 @@ class QuestionViewTest(TestCase):
         self.user = get_user_model().objects.create(username='some_user')
         self.question = Question.objects.create(title='Android or iPhone?', description='Help a non-techy person out!')
         text = 'I am using Android now, but missing some iPhone features.'
-        answer = Answer.objects.create(text=text, question=self.question)
+        self.answer = Answer.objects.create(text=text, question=self.question)
 
     def test_basic_view(self):
         response = self.client.get(self.question.get_absolute_url())
@@ -55,6 +55,10 @@ class QuestionViewTest(TestCase):
     def test_question_and_answer_relationship(self):
         number_of_answers = len(self.question.answers.all())
         self.assertEqual(number_of_answers, 1)
+    
+    def test_view_with_one_answer(self):
+        response = self.client.get(self.question.get_absolute_url())
+        self.assertContains(response, str(self.answer.text))
 
 
 class AnswerModelTest(TestCase):

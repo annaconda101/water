@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-    Question Detail Page
+    Question
     {% include "fire/_question.html" with question=question only %}
+
+    <hr>
+    <h4>Answers</h4>
+        {% for answer in question.answers.all %}
+            {{ answer.text|linebreaks }}
+        {% empty %}
+            No answers yet.
+        {% endfor %}
 {% endblock %}
