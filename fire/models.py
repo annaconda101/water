@@ -23,3 +23,6 @@ class Answer(models.Model):
 
     def __unicode__(self):
         return '%s - %s' %(self.text, self.question) 
+    
+    def __str__(self):
+        return self.text

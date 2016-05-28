@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from .models import Question
+from .models import Question, Answer
 
 
 class QuestionModelTest(TestCase):
@@ -49,3 +49,10 @@ class QuestionViewTest(TestCase):
     def test_basic_view(self):
         response = self.client.get(self.question.get_absolute_url())
         self.assertEqual(response.status_code, 200)
+
+
+class AnswerModelTest(TestCase):
+    def test_string_representation(self):
+        text = 'I personally like Android.'
+        answer = Answer(text=text)
+        self.assertEqual(str(answer), text)
