@@ -3,10 +3,7 @@
 {% block content %}
     {% if questions %}
         {% for question in questions %}
-            <article>
-            <h2><a href="{{ question.get_absolute_url }}">{{ question.title }}</a></h2>
-            <p class="subheader">{{ question.description }}</p>
-            </article>
+            {% include "fire/_question.html" %}
     {% endfor %}
     {% endif %}
 {% endblock content %}
