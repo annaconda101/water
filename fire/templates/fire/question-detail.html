@@ -8,6 +8,9 @@
     <h4>Answers</h4>
     {% for answer in question.answers.all %}
         {{ answer.text|linebreaks }}
+        <p id='answer-{{ answer.id }}-score'>{{ answer.score }}</p>
+        <p><a id='answer-{{ answer.id }}-upvote' href='{{ answer.get_upvote_url }}'>Upvote</a></p>
+        <p><a id='answer-{{ answer.id }}-downvote' href='{{ answer.get_downvote_url }}'>Downvote</a></p>
     {% empty %}
         No answers yet.
     {% endfor %}

@@ -26,3 +26,21 @@ class Answer(models.Model):
     
     def __str__(self):
         return self.text
+
+    def get_upvote_url(self):
+        return reverse('fire_answer-upvote', kwargs={'id': self.pk})
+
+    def get_downvote_url(self):
+        return reverse('fire_answer-downvote', kwargs={'id': self.pk})
+
+    def upvote(self):
+        new_score = self.score + 1
+        self.score = new_score
+
+        self.save()
+
+    def downvote(self):
+        new_score = self.score - 1
+        self.score = new_score
+
+        self.save()

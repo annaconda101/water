@@ -54,6 +54,8 @@ class HomePageTests(TestCase):
         new_question_url = self.client.get(reverse('fire_question-new')).request['PATH_INFO']
         self.assertContains(response, new_question_url)
 
+
+
 class QuestionViewTest(WebTest):
     def setUp(self):
         self.user = get_user_model().objects.create(username='some_user')
@@ -87,6 +89,30 @@ class QuestionViewTest(WebTest):
         page.form['text'] = "Test answer"
         page = page.form.submit()
         self.assertRedirects(page, self.question.get_absolute_url())
+
+    def test_upvoting_answer(self):
+        question = Question.objects.create(title='Android or iPhone?', description='Help a non-techy person out!')
+        text = 'I am using Android now, but missing some iPhone features.'
+        answer = Answer.objects.create(text=text, question=question, score=0)
+
+        question_detail_response = self.app.get(reverse('fire_question-detail', kwargs={'id':question.id}))
+        answer_downvote_response = question_detail_response.click(linkid='answer-%s-upvote' %answer.id)
+        answer_score = answer_downvote_response.follow().html.select('#answer-%s-score' %answer.id)
+        answer_score_text = answer_downvote_response.follow().html.select('#answer-%s-score' %answer.id)[0].text
+
+        self.assertEqual(answer_score_text, u'1')
+
+    def test_downvoting_answer(self):
+        question = Question.objects.create(title='Android or iPhone?', description='Help a non-techy person out!')
+        text = 'I am using Android now, but missing some iPhone features.'
+        answer = Answer.objects.create(text=text, question=question, score=0)
+
+        question_detail_response = self.app.get(reverse('fire_question-detail', kwargs={'id':question.id}))
+        answer_downvote_response = question_detail_response.click(linkid='answer-%s-downvote' %answer.id)
+        answer_score = answer_downvote_response.follow().html.select('#answer-%s-score' %answer.id)
+        answer_score_text = answer_downvote_response.follow().html.select('#answer-%s-score' %answer.id)[0].text
+
+        self.assertEqual(answer_score_text, u'-1')
 
 
 class AnswerModelTest(TestCase):
@@ -155,7 +181,7 @@ class QuestionFormTest(WebTest):
             'title': ['This field is required.'],
             'description': ['This field is required.'],
      })
-    
+
     def test_view_page(self):
         new_question_page = self.app.get(reverse('fire_question-new'))
         self.assertEqual(len(new_question_page.forms), 1)
@@ -177,3 +203,4 @@ class QuestionFormTest(WebTest):
         self.assertEqual(response.status_code, 302)
         self.assertContains(response.follow(), title)
         self.assertContains(response.follow(), description)
+

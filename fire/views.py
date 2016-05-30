@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.models import User
 
-from fire.models import Question
+from fire.models import Question, Answer
 from .forms import AnswerForm, QuestionForm
 
 
@@ -34,3 +34,16 @@ def question_create(request):
     c = { 'form': form }
     return render(request, 'fire/question-new.html', c)
     
+
+def answer_upvote(request, id):
+    answer = get_object_or_404(Answer, id=id)
+    answer.upvote()
+
+    return redirect('fire_question-detail', answer.question.id)
+
+
+def answer_downvote(request, id):
+    answer = get_object_or_404(Answer, id=id)
+    answer.downvote()
+
+    return redirect('fire_question-detail', answer.question.id)
