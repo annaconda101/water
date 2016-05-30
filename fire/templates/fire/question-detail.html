@@ -6,9 +6,16 @@
 
     <hr>
     <h4>Answers</h4>
-        {% for answer in question.answers.all %}
-            {{ answer.text|linebreaks }}
-        {% empty %}
-            No answers yet.
-        {% endfor %}
+    {% for answer in question.answers.all %}
+        {{ answer.text|linebreaks }}
+    {% empty %}
+        No answers yet.
+    {% endfor %}
+
+    <h5>Add an answer</h5>
+    <form method="post">
+        {{ form.as_p }}
+        <input type="submit" value="Create Comment">
+    </form>
+
 {% endblock %}

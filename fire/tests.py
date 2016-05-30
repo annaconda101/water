@@ -1,6 +1,8 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+
 from .models import Question, Answer
+from .forms import AnswerForm
 
 
 class QuestionModelTest(TestCase):
@@ -71,3 +73,31 @@ class AnswerModelTest(TestCase):
         text = 'I personally like Android.'
         answer = Answer(text=text)
         self.assertEqual(answer.score, 0)
+
+
+class AnswerFormTest(TestCase):
+    def setUp(self):
+        user = get_user_model().objects.create_user('annav')
+        self.question = Question.objects.create(title="What's your favourite flavour of tea", description='I like drinks!')
+
+    def test_init(self):
+        AnswerForm(question=self.question)
+
+    def test_init_without_question(self):
+        with self.assertRaises(KeyError):
+            AnswerForm()
+
+    def test_valid_data(self):
+        form = AnswerForm({
+            'text': "Sample answer",
+        }, question=self.question)
+        self.assertTrue(form.is_valid())
+        answer = form.save()
+        self.assertEqual(answer.text, "Sample answer")
+
+    def test_blank_data(self):
+        form = AnswerForm({}, question=self.question)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors, {
+            'text': ['This field is required.'],
+     })
