@@ -129,7 +129,7 @@ class AnswerFormTest(TestCase):
      })
 
 
-class QuestionFormTest(TestCase):
+class QuestionFormTest(WebTest):
     def setUp(self):
         user = get_user_model().objects.create_user('annav')
 
@@ -155,3 +155,25 @@ class QuestionFormTest(TestCase):
             'title': ['This field is required.'],
             'description': ['This field is required.'],
      })
+    
+    def test_view_page(self):
+        new_question_page = self.app.get(reverse('fire_question-new'))
+        self.assertEqual(len(new_question_page.forms), 1)
+
+    def test_form_error(self):
+        new_question_page = self.app.get(reverse('fire_question-new'))
+        page = new_question_page.form.submit()
+        self.assertContains(page, "This field is required.")
+
+    def test_form_success(self):
+        new_question_page = self.app.get(reverse('fire_question-new'))
+        title = "What are the continents of the world?"
+        description = "an easy question"
+        new_question_page.form['title'] = title
+        new_question_page.form['description'] = description
+
+        response = new_question_page.form.submit()
+
+        self.assertEqual(response.status_code, 302)
+        self.assertContains(response.follow(), title)
+        self.assertContains(response.follow(), description)
