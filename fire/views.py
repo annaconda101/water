@@ -21,3 +21,6 @@ def question_detail(request, id):
     return render(request, 'fire/question-detail.html', c)
 
 
+def question_create(request):
+    return render(request, 'fire/question-new.html')
+    

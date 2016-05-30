@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.core.urlresolvers import reverse
 
 from .models import Question, Answer
 from .forms import AnswerForm
@@ -44,6 +45,11 @@ class HomePageTests(TestCase):
         self.assertContains(response, second_description)
 
 
+    def test_create_new_question_url(self):
+        response = self.client.get(reverse('fire_question-new'))
+        self.assertEqual(response.status_code, 200)
+
+
 class QuestionViewTest(WebTest):
     def setUp(self):
         self.user = get_user_model().objects.create(username='some_user')
@@ -77,7 +83,6 @@ class QuestionViewTest(WebTest):
         page.form['text'] = "Test answer"
         page = page.form.submit()
         self.assertRedirects(page, self.question.get_absolute_url())
-
 
 
 class AnswerModelTest(TestCase):
