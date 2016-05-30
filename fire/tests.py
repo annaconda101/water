@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 
 from .models import Question, Answer
-from .forms import AnswerForm
+from .forms import AnswerForm, QuestionForm
 from django_webtest import WebTest
 
 
@@ -128,3 +128,30 @@ class AnswerFormTest(TestCase):
             'text': ['This field is required.'],
      })
 
+
+class QuestionFormTest(TestCase):
+    def setUp(self):
+        user = get_user_model().objects.create_user('annav')
+
+    def test_init(self):
+        QuestionForm()
+
+    def test_valid_data(self):
+        sample_title = "Describe what to you is the best holiday?"
+        sample_description = "Daydreaming of my next break..."
+        form = QuestionForm({
+            'title': sample_title,
+            'description': sample_description,
+        })
+        self.assertTrue(form.is_valid())
+        question = form.save()
+        self.assertEqual(question.title, sample_title)
+        self.assertEqual(question.description, sample_description)
+
+    def test_blank_data(self):
+        form = QuestionForm({})
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors, {
+            'title': ['This field is required.'],
+            'description': ['This field is required.'],
+     })

@@ -1,12 +1,12 @@
 from django import forms
 
-from .models import Answer
+from .models import Answer, Question
 
 
 class AnswerForm(forms.ModelForm):
     class Meta:
         model = Answer
-        fields = ('text', )
+        fields = ('text',)
 
     def __init__(self, *args, **kwargs):
         self.question = kwargs.pop('question')
@@ -17,3 +17,13 @@ class AnswerForm(forms.ModelForm):
         answer.question = self.question
         answer.save()
         return answer
+
+
+class QuestionForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = ('title', 'description',)
+
+    def __init__(self, *args):
+        super(QuestionForm, self).__init__(*args)
+
