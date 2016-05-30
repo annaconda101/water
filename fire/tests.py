@@ -49,6 +49,10 @@ class HomePageTests(TestCase):
         response = self.client.get(reverse('fire_question-new'))
         self.assertEqual(response.status_code, 200)
 
+    def test_new_question_url_on_homepage(self):
+        response = self.client.get('/')
+        new_question_url = self.client.get(reverse('fire_question-new')).request['PATH_INFO']
+        self.assertContains(response, new_question_url)
 
 class QuestionViewTest(WebTest):
     def setUp(self):
