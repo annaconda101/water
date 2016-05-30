@@ -14,8 +14,9 @@
 
     <h5>Add an answer</h5>
     <form method="post">
+        {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Create Comment">
+        <input type="submit" value="Create Answer">
     </form>
 
 {% endblock %}

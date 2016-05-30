@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 
 from .models import Question, Answer
 from .forms import AnswerForm
+from django_webtest import WebTest
 
 
 class QuestionModelTest(TestCase):
@@ -43,7 +44,7 @@ class HomePageTests(TestCase):
         self.assertContains(response, second_description)
 
 
-class QuestionViewTest(TestCase):
+class QuestionViewTest(WebTest):
     def setUp(self):
         self.user = get_user_model().objects.create(username='some_user')
         self.question = Question.objects.create(title='Android or iPhone?', description='Help a non-techy person out!')
@@ -61,6 +62,22 @@ class QuestionViewTest(TestCase):
     def test_view_with_one_answer(self):
         response = self.client.get(self.question.get_absolute_url())
         self.assertContains(response, str(self.answer.text))
+
+    def test_view_page(self):
+        page = self.app.get(self.question.get_absolute_url())
+        self.assertEqual(len(page.forms), 1)
+
+    def test_form_error(self):
+        page = self.app.get(self.question.get_absolute_url())
+        page = page.form.submit()
+        self.assertContains(page, "This field is required.")
+
+    def test_form_success(self):
+        page = self.app.get(self.question.get_absolute_url())
+        page.form['text'] = "Test answer"
+        page = page.form.submit()
+        self.assertRedirects(page, self.question.get_absolute_url())
+
 
 
 class AnswerModelTest(TestCase):
@@ -101,3 +118,4 @@ class AnswerFormTest(TestCase):
         self.assertEqual(form.errors, {
             'text': ['This field is required.'],
      })
+
