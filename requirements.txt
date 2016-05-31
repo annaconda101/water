@@ -2,5 +2,8 @@ beautifulsoup4==4.4.1
 Django==1.9.6
 django-webtest==1.7.9
 djangorestframework==3.3.3
-pip==8.1.2
+gunicorn==19.6.0
+six==1.10.0
+waitress==0.9.0
+WebOb==1.6.1
 WebTest==2.0.21
