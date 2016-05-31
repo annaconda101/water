@@ -10,6 +10,7 @@ The answers are ordered in descending order, having the answer with the most vot
 # Prerequisites
 ## homebrew
 1. [installation](http://brew.sh/)
+
 ## postgres
 1. `brew install postgres`
 2. `postgres -D /usr/local/var/postgres`
