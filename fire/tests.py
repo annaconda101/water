@@ -1,10 +1,12 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
+from django_webtest import WebTest
 
 from .models import Question, Answer
 from .forms import AnswerForm, QuestionForm
-from django_webtest import WebTest
+
+from mock import patch
 
 
 class QuestionModelTest(TestCase):
@@ -44,7 +46,6 @@ class HomePageTests(TestCase):
         self.assertContains(response, second_title)
         self.assertContains(response, second_description)
 
-
     def test_create_new_question_url(self):
         response = self.client.get(reverse('fire_question-new'))
         self.assertEqual(response.status_code, 200)
@@ -55,13 +56,12 @@ class HomePageTests(TestCase):
         self.assertContains(response, new_question_url)
 
 
-
 class QuestionViewTest(WebTest):
     def setUp(self):
         self.user = get_user_model().objects.create(username='some_user')
         self.question = Question.objects.create(title='Android or iPhone?', description='Help a non-techy person out!')
         text = 'I am using Android now, but missing some iPhone features.'
-        self.answer = Answer.objects.create(text=text, question=self.question)
+        self.answer = Answer.objects.create(text=text, question=self.question, sentiment_polarity=0.00)
 
     def test_basic_view(self):
         response = self.client.get(self.question.get_absolute_url())
@@ -93,29 +93,30 @@ class QuestionViewTest(WebTest):
     def test_upvoting_answer(self):
         question = Question.objects.create(title='Android or iPhone?', description='Help a non-techy person out!')
         text = 'I am using Android now, but missing some iPhone features.'
-        answer = Answer.objects.create(text=text, question=question, score=0)
+        answer = Answer.objects.create(text=text, question=question, score=0, sentiment_polarity=0.00)
 
         question_detail_response = self.app.get(reverse('fire_question-detail', kwargs={'id':question.id}))
         answer_downvote_response = question_detail_response.click(linkid='answer-%s-upvote' %answer.id)
         answer_score = answer_downvote_response.follow().html.select('#answer-%s-score' %answer.id)
         answer_score_text = answer_downvote_response.follow().html.select('#answer-%s-score' %answer.id)[0].text
 
-        self.assertEqual(answer_score_text, u'1')
+        self.assertEqual(answer_score_text, u'votes: 1')
 
     def test_downvoting_answer(self):
         question = Question.objects.create(title='Android or iPhone?', description='Help a non-techy person out!')
         text = 'I am using Android now, but missing some iPhone features.'
-        answer = Answer.objects.create(text=text, question=question, score=0)
+        answer = Answer.objects.create(text=text, question=question, score=0, sentiment_polarity=0.00)
 
         question_detail_response = self.app.get(reverse('fire_question-detail', kwargs={'id':question.id}))
         answer_downvote_response = question_detail_response.click(linkid='answer-%s-downvote' %answer.id)
         answer_score = answer_downvote_response.follow().html.select('#answer-%s-score' %answer.id)
         answer_score_text = answer_downvote_response.follow().html.select('#answer-%s-score' %answer.id)[0].text
 
-        self.assertEqual(answer_score_text, u'-1')
+        self.assertEqual(answer_score_text, u'votes: -1')
 
 
 class AnswerModelTest(TestCase):
+
     def test_string_representation(self):
         text = 'I personally like Android.'
         answer = Answer(text=text)
@@ -128,6 +129,7 @@ class AnswerModelTest(TestCase):
 
 
 class AnswerFormTest(TestCase):
+
     def setUp(self):
         user = get_user_model().objects.create_user('annav')
         self.question = Question.objects.create(title="What's your favourite flavour of tea", description='I like drinks!')
@@ -140,9 +142,10 @@ class AnswerFormTest(TestCase):
             AnswerForm()
 
     def test_valid_data(self):
-        form = AnswerForm({
-            'text': "Sample answer",
-        }, question=self.question)
+        form = AnswerForm(
+            {'text': "Sample answer",},
+            question=self.question
+        )
         self.assertTrue(form.is_valid())
         answer = form.save()
         self.assertEqual(answer.text, "Sample answer")
