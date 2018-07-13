@@ -20,6 +20,7 @@ class Answer(models.Model):
     text = models.CharField(max_length=200)
     score = models.IntegerField(default=0)
     question = models.ForeignKey(Question, related_name='answers')
+    sentiment_polarity = models.DecimalField(max_digits=5, decimal_places=3)
 
     def __unicode__(self):
         return '%s - %s' %(self.text, self.question) 
