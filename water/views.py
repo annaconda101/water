@@ -5,6 +5,6 @@ from fire.models import Question
 
 def index(request):
     questions = Question.objects.all()
-    c = { 'questions': questions, }
+    c = {'questions': questions,}
 
     return render_to_response('index.html', c)

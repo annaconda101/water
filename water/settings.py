@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'fire.apps.FireConfig',
+    'doggly.apps.DogglyConfig'
 ]
 
 REST_FRAMEWORK = {

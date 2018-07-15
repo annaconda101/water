@@ -1,5 +1,4 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from django.contrib.auth.models import User
 
 from fire.models import Question, Answer
 from .forms import AnswerForm, QuestionForm
@@ -16,7 +15,7 @@ def question_detail(request, id):
     else:
         form = AnswerForm(question=question)
 
-    c = { 'question': question, 'form': form, }
+    c = {'question': question, 'form': form,}
 
     return render(request, 'fire/question-detail.html', c)
 
@@ -31,7 +30,8 @@ def question_create(request):
     else:
         form = QuestionForm()
 
-    c = { 'form': form }
+    c = {'form': form}
+
     return render(request, 'fire/question-new.html', c)
     
 

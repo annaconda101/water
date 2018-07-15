@@ -20,6 +20,7 @@ class AnswerForm(forms.ModelForm):
 
         return answer
 
+
 class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question
